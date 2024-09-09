@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { format } from 'date-fns';
-import { FaTable, FaThList, FaFilter, FaFilePdf } from 'react-icons/fa';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { format } from "date-fns";
+import { FaTable, FaThList, FaFilter, FaFilePdf } from "react-icons/fa";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import { FaSearch } from "react-icons/fa";
 export default function UserTasks() {
   const router = useRouter();
@@ -13,19 +13,19 @@ export default function UserTasks() {
 
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({
-    title: '',
-    description: '',
-    deadline: '',
-    startsAt: '',
+    title: "",
+    description: "",
+    deadline: "",
+    startsAt: "",
   });
   const [editTask, setEditTask] = useState(null); // State for editing a task
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [viewMode, setViewMode] = useState('card'); // Default to card view
+  const [viewMode, setViewMode] = useState("card"); // Default to card view
   const [filterVisible, setFilterVisible] = useState(false);
   const [dateRange, setDateRange] = useState({
-    from: '',
-    to: '',
+    from: "",
+    to: "",
   });
 
   // Fetch tasks for the user with date range filter
@@ -38,17 +38,17 @@ export default function UserTasks() {
   const fetchTasks = async () => {
     try {
       const query = new URLSearchParams();
-      query.append('userId', userId);
+      query.append("userId", userId);
       if (dateRange.from && dateRange.to) {
-        query.append('from', dateRange.from);
-        query.append('to', dateRange.to);
+        query.append("from", dateRange.from);
+        query.append("to", dateRange.to);
       }
       const response = await fetch(`/api/tasks?${query.toString()}`);
       const data = await response.json();
       setTasks(data);
       setLoading(false);
     } catch (error) {
-      console.error('Failed to fetch tasks', error);
+      console.error("Failed to fetch tasks", error);
       setLoading(false);
     }
   };
@@ -70,23 +70,23 @@ export default function UserTasks() {
     };
 
     try {
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
+      const response = await fetch("/api/tasks", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(taskData),
       });
 
       if (response.ok) {
-        setNewTask({ title: '', description: '', deadline: '', startsAt: '' });
+        setNewTask({ title: "", description: "", deadline: "", startsAt: "" });
         fetchTasks(); // Refresh tasks after adding
-        alert('Task added successfully');
+        alert("Task added successfully");
       } else {
-        alert('Failed to add task');
+        alert("Failed to add task");
       }
     } catch (error) {
-      console.error('Error adding task:', error);
+      console.error("Error adding task:", error);
     }
 
     setIsSubmitting(false);
@@ -97,8 +97,8 @@ export default function UserTasks() {
     setNewTask({
       title: task.title,
       description: task.description,
-      deadline: format(new Date(task.deadline), 'yyyy-MM-dd'),
-      startsAt: format(new Date(task.startsAt), 'yyyy-MM-dd'),
+      deadline: format(new Date(task.deadline), "yyyy-MM-dd"),
+      startsAt: format(new Date(task.startsAt), "yyyy-MM-dd"),
     });
   };
 
@@ -115,50 +115,50 @@ export default function UserTasks() {
 
     try {
       const response = await fetch(`/api/tasks?id=${editTask.id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(taskData),
       });
 
       if (response.ok) {
         setEditTask(null);
-        setNewTask({ title: '', description: '', deadline: '', startsAt: '' });
+        setNewTask({ title: "", description: "", deadline: "", startsAt: "" });
         fetchTasks(); // Refresh tasks after updating
-        alert('Task updated successfully');
+        alert("Task updated successfully");
       } else {
-        alert('Failed to update task');
+        alert("Failed to update task");
       }
     } catch (error) {
-      console.error('Error updating task:', error);
+      console.error("Error updating task:", error);
     }
 
     setIsSubmitting(false);
   };
 
   const handleDeleteTask = async (taskId) => {
-    const confirmed = confirm('Are you sure you want to delete this task?');
+    const confirmed = confirm("Are you sure you want to delete this task?");
     if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/tasks?id=${taskId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (response.ok) {
         fetchTasks(); // Refresh tasks after deleting
-        alert('Task deleted successfully');
+        alert("Task deleted successfully");
       } else {
-        alert('Failed to delete task');
+        alert("Failed to delete task");
       }
     } catch (error) {
-      console.error('Error deleting task:', error);
+      console.error("Error deleting task:", error);
     }
   };
 
   const toggleViewMode = () => {
-    setViewMode((prevMode) => (prevMode === 'card' ? 'table' : 'card'));
+    setViewMode((prevMode) => (prevMode === "card" ? "table" : "card"));
   };
 
   const handleFilterToggle = () => {
@@ -172,23 +172,27 @@ export default function UserTasks() {
 
   const generatePDFReport = () => {
     const doc = new jsPDF();
-    doc.text('User Tasks Report', 14, 22);
-    
-    const tableData = tasks.map(task => [
+    doc.text("User Tasks Report", 14, 22);
+
+    const tableData = tasks.map((task) => [
       task.title,
       task.description,
-      format(new Date(task.startsAt), 'MM/dd/yyyy'),
-      format(new Date(task.deadline), 'MM/dd/yyyy'),
+      format(new Date(task.startsAt), "MM/dd/yyyy"),
+      format(new Date(task.deadline), "MM/dd/yyyy"),
       task.status,
-      `${Math.ceil((new Date(task.deadline) - new Date()) / (1000 * 60 * 60 * 24))} days left`,
+      `${Math.ceil(
+        (new Date(task.deadline) - new Date()) / (1000 * 60 * 60 * 24)
+      )} days left`,
     ]);
 
     doc.autoTable({
-      head: [['Title', 'Description', 'Starts At', 'Deadline', 'Status', 'R.Time']],
+      head: [
+        ["Title", "Description", "Starts At", "Deadline", "Status", "R.Time"],
+      ],
       body: tableData,
     });
 
-    doc.save('user-tasks-report.pdf');
+    doc.save("user-tasks-report.pdf");
   };
 
   return (
@@ -196,8 +200,12 @@ export default function UserTasks() {
       <div className="bg-white p-4 rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-2">User Details</h2>
         <div className="text-gray-700">
-          <p><strong>Name:</strong> {name}</p>
-          <p><strong>Phone:</strong> {phone}</p>
+          <p>
+            <strong>Name:</strong> {name}
+          </p>
+          <p>
+            <strong>Phone:</strong> {phone}
+          </p>
         </div>
       </div>
 
@@ -220,7 +228,7 @@ export default function UserTasks() {
             onClick={toggleViewMode}
             className="p-2 bg-blue-500 text-white rounded-md"
           >
-            {viewMode === 'card' ? <FaTable /> : <FaThList />}
+            {viewMode === "card" ? <FaTable /> : <FaThList />}
           </button>
         </div>
       </div>
@@ -250,21 +258,21 @@ export default function UserTasks() {
               />
             </div>
             <div>
-            <label className="block text-sm font-medium">Filter</label>
-            <button
-              onClick={fetchTasks}
-              className="p-2 bg-green-500 text-white rounded-md"
+              <label className="block text-sm font-medium">Filter</label>
+              <button
+                onClick={fetchTasks}
+                className="p-2 bg-green-500 text-white rounded-md"
               >
-               <FaSearch />
-            </button>
-              </div>
+                <FaSearch />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {loading ? (
         <p>Loading tasks...</p>
-      ) : viewMode === 'card' ? (
+      ) : viewMode === "card" ? (
         // Card View
         <div className="grid grid-cols-1 gap-4 mt-4">
           {tasks.length === 0 ? (
@@ -274,14 +282,40 @@ export default function UserTasks() {
               <div key={task.id} className="bg-white p-4 rounded-lg shadow-md">
                 <h4 className="text-lg font-semibold">{task.title}</h4>
                 <p className="mt-2">{task.description}</p>
-                <p className="mt-2 text-sm text-gray-600">Starts At: {format(new Date(task.startsAt), 'MM/dd/yyyy')}</p>
-                <p className="mt-2 text-sm text-gray-600">Deadline: {format(new Date(task.deadline), 'MM/dd/yyyy')}</p>
-                <p className="mt-2 text-sm text-gray-600">Status: {task.status}</p>
-                <p className="mt-2 text-sm text-gray-600">R.Time: {`${Math.ceil((new Date(task.deadline) - new Date()) / (1000 * 60 * 60 * 24))} days left`}</p>
-                <button onClick={() => handleEditTask(task)} className="mt-2 p-2 bg-yellow-500 text-white rounded-md">
+                <p className="mt-2 text-sm text-gray-600">
+                  Starts At: {format(new Date(task.startsAt), "MM/dd/yyyy")}
+                </p>
+                <p className="mt-2 text-sm text-gray-600">
+                  Deadline: {format(new Date(task.deadline), "MM/dd/yyyy")}
+                </p>
+                <p
+                  className={`mt-2 text-sm ${
+                    task.status === "pending"
+                      ? "text-yellow-500"
+                      : "text-green-500"
+                  }`}
+                >
+                  Status: {task.status}
+                </p>
+                {task.status != "submitted" && (
+                  <p className="mt-2 text-sm text-gray-600">
+                    R.Time:{" "}
+                    {`${Math.ceil(
+                      (new Date(task.deadline) - new Date()) /
+                        (1000 * 60 * 60 * 24)
+                    )} days left`}
+                  </p>
+                )}
+                <button
+                  onClick={() => handleEditTask(task)}
+                  className="mt-2 p-2 bg-yellow-500 text-white rounded-md"
+                >
                   Edit
                 </button>
-                <button onClick={() => handleDeleteTask(task.id)} className="mt-2 p-2 mx-1 bg-red-500 text-white rounded-md">
+                <button
+                  onClick={() => handleDeleteTask(task.id)}
+                  className="mt-2 p-2 mx-1 bg-red-500 text-white rounded-md"
+                >
                   Delete
                 </button>
               </div>
@@ -306,22 +340,37 @@ export default function UserTasks() {
             <tbody>
               {tasks.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="p-4 text-center">No tasks found</td>
+                  <td colSpan="7" className="p-4 text-center">
+                    No tasks found
+                  </td>
                 </tr>
               ) : (
                 tasks.map((task) => (
                   <tr key={task.id}>
                     <td className="p-2 border-b">{task.title}</td>
                     <td className="p-2 border-b">{task.description}</td>
-                    <td className="p-2 border-b">{format(new Date(task.startsAt), 'MM/dd/yyyy')}</td>
-                    <td className="p-2 border-b">{format(new Date(task.deadline), 'MM/dd/yyyy')}</td>
-                    <td className="p-2 border-b">{task.status}</td>
-                    <td className="p-2 border-b">{`${Math.ceil((new Date(task.deadline) - new Date()) / (1000 * 60 * 60 * 24))} days left`}</td>
                     <td className="p-2 border-b">
-                      <button onClick={() => handleEditTask(task)} className="p-1 bg-yellow-500 text-white rounded-md mr-2">
+                      {format(new Date(task.startsAt), "MM/dd/yyyy")}
+                    </td>
+                    <td className="p-2 border-b">
+                      {format(new Date(task.deadline), "MM/dd/yyyy")}
+                    </td>
+                    <td className="p-2 border-b">{task.status}</td>
+                    <td className="p-2 border-b">{`${Math.ceil(
+                      (new Date(task.deadline) - new Date()) /
+                        (1000 * 60 * 60 * 24)
+                    )} days left`}</td>
+                    <td className="p-2 border-b">
+                      <button
+                        onClick={() => handleEditTask(task)}
+                        className="p-1 bg-yellow-500 text-white rounded-md mr-2"
+                      >
                         Edit
                       </button>
-                      <button onClick={() => handleDeleteTask(task.id)} className="p-1 bg-red-500 text-white rounded-md">
+                      <button
+                        onClick={() => handleDeleteTask(task.id)}
+                        className="p-1 bg-red-500 text-white rounded-md"
+                      >
                         Delete
                       </button>
                     </td>
@@ -334,8 +383,13 @@ export default function UserTasks() {
       )}
 
       <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-4">{editTask ? 'Edit Task' : 'Add New Task'}</h3>
-        <form onSubmit={editTask ? handleUpdateTask : handleAddTask} className="bg-white p-4 rounded-lg shadow-md">
+        <h3 className="text-xl font-semibold mb-4">
+          {editTask ? "Edit Task" : "Add New Task"}
+        </h3>
+        <form
+          onSubmit={editTask ? handleUpdateTask : handleAddTask}
+          className="bg-white p-4 rounded-lg shadow-md"
+        >
           <div className="mb-4">
             <label className="block text-sm font-medium">Title</label>
             <input
@@ -384,7 +438,7 @@ export default function UserTasks() {
             disabled={isSubmitting}
             className="p-2 bg-blue-500 text-white rounded-md"
           >
-            {editTask ? 'Update Task' : 'Add Task'}
+            {editTask ? "Update Task" : "Add Task"}
           </button>
           {editTask && (
             <button

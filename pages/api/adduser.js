@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 export default async function handler(req, res) {
   const { method } = req;
   const { id } = req.query; // Expecting user ID from query params
-console.log(id)
+// console.log(id)
   switch (method) {
     // GET - Retrieve all users or a specific user by ID
     case 'GET':
@@ -23,7 +23,8 @@ console.log(id)
           res.status(200).json(users);
         }
       } catch (error) {
-        res.status(500).json({ error: 'Error retrieving users' });
+        console.log(error.message);
+        res.status(500).json({ error:error.message });
       }
       break;
 

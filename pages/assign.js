@@ -106,15 +106,16 @@ export default function UserTasks() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    
     const taskData = {
       ...newTask,
       deadline: new Date(newTask.deadline),
       startsAt: new Date(newTask.startsAt),
-      userId,
+      // userId,
     };
-
+    console.log(taskData)
     try {
-      const response = await fetch(`/api/tasks?id=${editTask.id}`, {
+      const response = await fetch(`/api/tasks?userId=${editTask.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -350,10 +351,10 @@ export default function UserTasks() {
                     <td className="p-2 border-b">{task.title}</td>
                     <td className="p-2 border-b">{task.description}</td>
                     <td className="p-2 border-b">
-                      {format(new Date(task.startsAt), "MM/dd/yyyy")}
+                      {format(new Date(task.startsAt), "MM/dd/yyyy HH:mm:ss")}
                     </td>
                     <td className="p-2 border-b">
-                      {format(new Date(task.deadline), "MM/dd/yyyy")}
+                      {format(new Date(task.deadline), "MM/dd/yyyy HH:mm:ss")}
                     </td>
                     <td className="p-2 border-b">{task.status}</td>
                     <td className="p-2 border-b">{`${Math.ceil(

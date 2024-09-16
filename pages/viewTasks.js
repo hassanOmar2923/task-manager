@@ -192,8 +192,8 @@ export default function UserTasks() {
                 <div key={task.id} className="bg-white p-4 rounded-lg shadow-md">
                   <h4 className="text-lg font-semibold">{task.title}</h4>
                   <p className="mt-2">{task.description}</p>
-                  <p className="mt-2 text-sm text-gray-600">Starts At: {format(new Date(task.startsAt), 'MM/dd/yyyy')}</p>
-                  <p className="mt-2 text-sm text-gray-600">Deadline: {format(new Date(task.deadline), 'MM/dd/yyyy')}</p>
+                  <p className="mt-2 text-sm text-gray-600">Starts At: {format(new Date(task.startsAt), 'MM/dd/yyyy HH:mm:ss')}</p>
+                  <p className="mt-2 text-sm text-gray-600">Deadline: {format(new Date(task.deadline), 'MM/dd/yyyy HH:mm:ss')}</p>
                   <p className="mt-2 text-sm text-gray-600">Status: {task.status}</p>
                   <button
                     className={`p-2 rounded-md mt-2 ${
